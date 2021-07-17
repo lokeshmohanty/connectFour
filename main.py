@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 class Game(tk.Frame):
-    def __init__(self, frame, rows=5, columns=6, players=[1, 2]):
+    def __init__(self, frame, rows=5, columns=6, players=[1, 2], colours=['yellow', 'green']):
         tk.Frame.__init__(self, frame)
         self.frame = frame
         self.max_rows = rows
@@ -11,6 +11,7 @@ class Game(tk.Frame):
         self.min_col = 0
         self.curr_player = 0
         self.players = players
+        self.colours = colours
 
         self.state = [[0 for col in range(self.max_columns)] for row in range(self.max_columns)]
         self.chain_cells = {}
@@ -109,7 +110,7 @@ class Game(tk.Frame):
         def make_move():
             self.state[row][column] = self.players[self.curr_player]
             self.cells[row][column].destroy()
-            self.cells[row][column] = tk.Button(self.frame, text=self.state[row][column], padx=30, pady=15, state="disabled", background="gray")
+            self.cells[row][column] = tk.Button(self.frame, text=self.state[row][column], padx=30, pady=15, state="disabled", background=self.colours[self.curr_player])
             self.cells[row][column].grid(row=row + self.min_row, column=column + self.min_col, sticky="nsew")
             self._update_chain_cells(row, column)
             if self.is_winner():
