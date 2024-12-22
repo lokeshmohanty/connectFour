@@ -6,7 +6,11 @@ from pathlib import Path
 from datetime import datetime
 
 class Game(tk.Frame):
-    def __init__(self, frame, rows=5, columns=6, players=['1', '2'], colours={'1': 'yellow', '2': 'green'}, cfg=None):
+    def __init__(self, frame, rows=5, columns=6,
+                 players=['P1', 'P2'],
+                 colours=['yellow', 'green'],
+                 font=('Helvetica', 12, 'bold'),
+                 cfg=None):
         tk.Frame.__init__(self, frame)
         self.frame = frame
         self.max_rows = rows
@@ -16,6 +20,7 @@ class Game(tk.Frame):
         self.curr_player = 0
         self.players = players
         self.colours = colours
+        self.font = font
 
         self.cfg = cfg
         self.savedir = None
@@ -93,9 +98,16 @@ class Game(tk.Frame):
             self.cells[row] = {}
             for column in range(self.max_columns):
                 if self.state[row][column] == 0:
-                    self.cells[row][column] = tk.Button(self.frame, text=" ", padx=30, pady=15, state="disabled", command=self.move(row, column))
+                    self.cells[row][column] = tk.Button(self.frame, text=" ", padx=30,
+                                                        pady=15, state="disabled",
+                                                        command=self.move(row, column), font=self.font)
                 else: 
-                    self.cells[row][column] = tk.Button(self.frame, text=self.state[row][column], padx=30, pady=15, state="disabled", background=self.colours[self.state[row][column]])
+                    self.cells[row][column] = tk.Button(self.frame,
+                                                        text=self.state[row][column],
+                                                        padx=30, pady=15,
+                                                        state="disabled",
+                                                        background=self.colours[self.curr_player],
+                                                        font=self.font)
                 self.cells[row][column].grid(row=row + self.min_row, column=column + self.min_col, sticky="nsew")
 
     def new(self):
@@ -189,7 +201,10 @@ class Game(tk.Frame):
         def make_move():
             self.state[row][column] = self.players[self.curr_player]
             self.cells[row][column].destroy()
-            self.cells[row][column] = tk.Button(self.frame, text=self.state[row][column], padx=30, pady=15, state="disabled", background=self.colours[self.state[row][column]])
+            self.cells[row][column] = tk.Button(self.frame, text=self.state[row][column],
+                                                padx=30, pady=15, state="disabled",
+                                                background=self.colours[self.curr_player],
+                                                font=self.font)
             self.cells[row][column].grid(row=row + self.min_row, column=column + self.min_col, sticky="nsew")
             self._update_chain_cells(row, column)
             if self.is_winner():
